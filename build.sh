@@ -198,6 +198,8 @@ fi
 lunch $LUNCH
 check_result "lunch failed."
 
+WORKSPACE=$WORKSPACE LUNCH=$LUNCH sh $WORKSPACE/hudson/changes/buildlog.sh 2>&1
+
 # save manifest used for build (saving revisions as current HEAD)
 
 # include only the auto-generated locals
