@@ -14,7 +14,7 @@ then
   git clone git://github.com/finnq/jenkins.git
 fi
 
-cd hudson
+cd jenkins
 ## Get rid of possible local changes
 git reset --hard
 git pull -s resolve
