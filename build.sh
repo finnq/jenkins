@@ -46,7 +46,7 @@ fi
 
 if [ -z "$SYNC_PROTO" ]
 then
-  SYNC_PROTO=http
+  SYNC_PROTO=git
 fi
 
 # colorization fix in Jenkins
@@ -78,8 +78,8 @@ then
   chmod a+x ~/bin/repo
 fi
 
-git config --global user.name $(whoami)@$NODE_NAME
-git config --global user.email jenkins@cyanogenmod.com
+git config --global user.name $(whoami)
+git config --global user.email finnq@finnq.de
 
 if [[ "$REPO_BRANCH" =~ "jellybean" || $REPO_BRANCH =~ "cm-10" ]]; then 
    JENKINS_BUILD_DIR=jellybean
@@ -115,7 +115,7 @@ then
   . ~/.jenkins_profile
 fi
 
-cp $WORKSPACE/hudson/$REPO_BRANCH.xml .repo/local_manifest.xml
+cp $WORKSPACE/jenkins/$REPO_BRANCH.xml .repo/local_manifest.xml
 
 echo Core Manifest:
 cat .repo/manifests/default.xml
@@ -128,9 +128,9 @@ repo sync -d -c > /dev/null
 check_result "repo sync failed."
 echo Sync complete.
 
-if [ -f $WORKSPACE/hudson/$REPO_BRANCH-setup.sh ]
+if [ -f $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh ]
 then
-  $WORKSPACE/hudson/$REPO_BRANCH-setup.sh
+  $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh
 fi
 
 if [ -f .last_branch ]
@@ -188,10 +188,10 @@ then
   IS_HTTP=$(echo $GERRIT_CHANGES | grep http)
   if [ -z "$IS_HTTP" ]
   then
-    python $WORKSPACE/hudson/repopick.py $GERRIT_CHANGES
+    python $WORKSPACE/jenkins/repopick.py $GERRIT_CHANGES
     check_result "gerrit picks failed."
   else
-    python $WORKSPACE/hudson/repopick.py $(curl $GERRIT_CHANGES)
+    python $WORKSPACE/jenkins/repopick.py $(curl $GERRIT_CHANGES)
     check_result "gerrit picks failed."
   fi
 fi
@@ -201,7 +201,7 @@ then
   ccache -M 100G
 fi
 
-WORKSPACE=$WORKSPACE LUNCH=$LUNCH sh $WORKSPACE/hudson/changes/buildlog.sh 2>&1
+WORKSPACE=$WORKSPACE LUNCH=$LUNCH sh
 
 LAST_CLEAN=0
 if [ -f .clean ]

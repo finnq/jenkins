@@ -5,13 +5,13 @@ then
 fi
 
 cd $WORKSPACE
-mkdir -p ../android
-cd ../android
+mkdir -p ../android/CyanogenMod
+cd ../android/CyanogenMod
 export WORKSPACE=$PWD
 
-if [ ! -d hudson ]
+if [ ! -d jenkins ]
 then
-  git clone git://github.com/CyanogenMod/hudson.git
+  git clone git://github.com/finnq/jenkins.git
 fi
 
 cd hudson
