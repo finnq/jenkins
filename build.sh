@@ -46,7 +46,7 @@ fi
 
 if [ -z "$SYNC_PROTO" ]
 then
-  SYNC_PROTO=http
+  SYNC_PROTO=git
 fi
 
 # colorization fix in Jenkins
@@ -64,21 +64,11 @@ mkdir -p archive
 export BUILD_NO=$BUILD_NUMBER
 unset BUILD_NUMBER
 
-export PATH=~/bin:$PATH
-
 export USE_CCACHE=1
 export CCACHE_NLEVELS=4
 export BUILD_WITH_COLORS=0
 
-REPO=$(which repo)
-if [ -z "$REPO" ]
-then
-  mkdir -p ~/bin
-  curl https://dl-ssl.google.com/dl/googlesource/git-repo/repo > ~/bin/repo
-  chmod a+x ~/bin/repo
-fi
-
-git config --global user.name $(whoami)
+git config --global user.name finnq
 git config --global user.email finnq@finnq.de
 
 if [[ "$REPO_BRANCH" =~ "jellybean" || $REPO_BRANCH =~ "cm-10" ]]; then 
