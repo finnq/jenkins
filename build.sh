@@ -186,6 +186,14 @@ then
   fi
 fi
 
+if ([ ! -z "$REBASED_COMMITS" ] && [ ! -z "$REBASED_REPOS" ])
+then
+  export CM_EXPERIMENTAL=true
+
+  python $WORKSPACE/jenkins/rebasedchanges.py $REBASED_COMMITS | $REBASED_REPOS
+  check_result "rebased changes picks failed."
+fi
+
 if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "100.0" ]
 then
   ccache -M 100G
