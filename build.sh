@@ -190,7 +190,7 @@ if ([ ! -z "$REBASED_COMMITS" ] && [ ! -z "$REBASED_REPOS" ])
 then
   export CM_EXPERIMENTAL=true
 
-  python $WORKSPACE/jenkins/rebasedchanges.py $REBASED_COMMITS | $REBASED_REPOS
+  python $WORKSPACE/jenkins/rebasedchanges.py $REBASED_COMMITS - $REBASED_REPOS
   check_result "rebased changes picks failed."
 fi
 
