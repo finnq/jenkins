@@ -18,6 +18,6 @@ for change in changes:
     path = project.replace('android_', '')
     path = path.replace('_', '/', 1)
 
-    os.system('cd %s ; git fetch git://github.com/finnq/%s.git ; git merge %s' % (path, project, change))
+    os.system('cd %s ; git fetch git://github.com/finnq/%s.git ; git cherry-pick %s' % (path, project, change))
 
     i = i + 1
