@@ -118,6 +118,8 @@ repo sync -d -c > /dev/null
 check_result "repo sync failed."
 echo Sync complete.
 
+git revert dde77bda2f1f1923026d7164b38298821f1c825b
+
 if [ -f $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh ]
 then
   $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh
