@@ -206,6 +206,9 @@ then
   echo "Cleaning!"
   touch .clean
   make clobber
+else
+  echo "Hacky fix build date!"
+  rm out/target/product/*/system/build.prop
 fi
 
 echo "$REPO_BRANCH-$CORE_BRANCH" > .last_branch
