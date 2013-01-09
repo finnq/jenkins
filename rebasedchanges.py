@@ -16,7 +16,7 @@ for change in changes:
     project = project.replace('CyanogenMod/', '')
 
     path = project.replace('android_', '')
-    path = path.replace('_', '/', 1)
+    path = path.replace('_', '/')
 
     os.system('cd %s ; git fetch git://github.com/finnq/%s.git ; git cherry-pick %s' % (path, project, change))
 
