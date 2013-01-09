@@ -201,21 +201,11 @@ fi
 
 WORKSPACE=$WORKSPACE LUNCH=$LUNCH sh
 
-LAST_CLEAN=0
-if [ -f .clean ]
-then
-  LAST_CLEAN=$(date -r .clean +%s)
-fi
-TIME_SINCE_LAST_CLEAN=$(expr $(date +%s) - $LAST_CLEAN)
-# convert this to hours
-TIME_SINCE_LAST_CLEAN=$(expr $TIME_SINCE_LAST_CLEAN / 60 / 60)
-if [ $TIME_SINCE_LAST_CLEAN -gt "24" -o $CLEAN = "true" ]
+if [ $CLEAN = "true" ]
 then
   echo "Cleaning!"
   touch .clean
   make clobber
-else
-  echo "Skipping clean: $TIME_SINCE_LAST_CLEAN hours since last clean."
 fi
 
 echo "$REPO_BRANCH-$CORE_BRANCH" > .last_branch
