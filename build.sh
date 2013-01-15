@@ -179,6 +179,35 @@ then
   export CM_EXPERIMENTAL=true
 fi
 
+if [ $PDROID = "true" ]
+then
+  export CM_EXPERIMENTAL=true
+
+  echo "------PDROID PATCHES------"
+
+  cd frameworks/opt/telephony
+  git pull pdroid $REPO_BRANCH-openpdroid
+  cd ../../..
+
+  cd frameworks/base
+  git pull pdroid $REPO_BRANCH-openpdroid
+  cd ../..
+
+  cd libcore
+  git pull pdroid $REPO_BRANCH-openpdroid
+  cd ..
+
+  cd build
+  git pull pdroid $REPO_BRANCH-openpdroid
+  cd ..
+
+  cd packages/apps/Mms
+  git pull pdroid $REPO_BRANCH-openpdroid
+  cd ../../..
+
+  echo "------PDROID PATCHES END------"
+fi
+
 if [ ! -z "$GERRIT_CHANGES" ]
 then
   export CM_EXPERIMENTAL=true
