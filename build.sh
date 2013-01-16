@@ -190,7 +190,7 @@ then
   cd ../../..
 
   cd frameworks/base
-  git pull pdroid $REPO_BRANCH-openpdroid
+  git pull pdroid $REPO_BRANCH-openpdroid-devel
   cd ../..
 
   cd libcore
