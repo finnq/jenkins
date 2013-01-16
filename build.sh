@@ -186,7 +186,7 @@ then
   echo "------PDROID PATCHES------"
 
   cd frameworks/opt/telephony
-  git pull pdroid $REPO_BRANCH-openpdroid
+  git pull pdroid $REPO_BRANCH-openpdroid-devel
   cd ../../..
 
   cd frameworks/base
@@ -194,15 +194,15 @@ then
   cd ../..
 
   cd libcore
-  git pull pdroid $REPO_BRANCH-openpdroid
+  git pull pdroid $REPO_BRANCH-openpdroid-devel
   cd ..
 
   cd build
-  git pull pdroid $REPO_BRANCH-openpdroid
+  git pull pdroid $REPO_BRANCH-openpdroid-devel
   cd ..
 
   cd packages/apps/Mms
-  git pull pdroid $REPO_BRANCH-openpdroid
+  git pull pdroid $REPO_BRANCH-openpdroid-devel
   cd ../../..
 
   echo "------PDROID PATCHES END------"
