@@ -248,7 +248,7 @@ else
   rm out/target/product/*/system/build.prop
 fi
 
-// PDroid fix
+# PDroid fix
 make update-api
 
 echo "$REPO_BRANCH-$CORE_BRANCH" > .last_branch
