@@ -7,7 +7,6 @@ elif [ "$LUNCH" = "cm_i9100-userdebug" ]
 then
   tweet "#finnqBuild started, #Galaxy #GalaxyS2 #i9100"
 else
-then
   tweet "#finnqBuild started, device $LUNCH not defined"
 fi
 #tweet status end
@@ -25,7 +24,6 @@ function check_result {
     then
       tweet "#finnqBuild failed, #Galaxy #GalaxyS2 #i9100"
     else
-    then
       tweet "#finnqBuild failed, device $LUNCH not defined"
     fi
     #tweet status end
@@ -344,7 +342,6 @@ then
 
   tweet "#finnqBuild finished successfully ROM: ${rom} Changelog: ${log} #Galaxy #GalaxyS2 #i9100"
 else
-then
   tweet "#finnqBuild finished successfully, device $LUNCH not defined"
 fi
 #tweet status end
