@@ -1,9 +1,35 @@
 #!/usr/bin/env bash
+#tweet status
+if [ "$LUNCH" = "cm_mako-userdebug" ]
+then
+  tweet "#finnqBuild started, #Nexus #Nexus4 #mako"
+elif [ "$LUNCH" = "cm_i9100-userdebug" ]
+then
+  tweet "#finnqBuild started, #Galaxy #GalaxyS2 #i9100"
+else
+then
+  tweet "#finnqBuild started, device $LUNCH not defined"
+fi
+#tweet status end
 
 function check_result {
   if [ "0" -ne "$?" ]
   then
     echo $1
+
+    #tweet status
+    if [ "$LUNCH" = "cm_mako-userdebug" ]
+    then
+      tweet "#finnqBuild failed, #Nexus #Nexus4 #mako"
+    elif [ "$LUNCH" = "cm_i9100-userdebug" ]
+    then
+      tweet "#finnqBuild failed, #Galaxy #GalaxyS2 #i9100"
+    else
+    then
+      tweet "#finnqBuild failed, device $LUNCH not defined"
+    fi
+    #tweet status end
+
     exit 1
   fi
 }
@@ -299,3 +325,26 @@ then
     check_result "Failure archiving $f"
   done
 fi
+
+#pdroid cleanup
+rm -rf frameworks/base
+
+#tweet status
+
+if [ "$LUNCH" = "cm_mako-userdebug" ]
+then
+  rom="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://n4.finnq.de/Preview/cm-10.1-$(date +"%Y%m%d")-EXPERIMENTAL-mako-finnq.zip&format=txt"`"
+  log="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://n4.finnq.de/Preview/Log/changelog-$(date +"%Y%m%d").txt&format=txt"`"
+
+  tweet "#finnqBuild finished successfully ROM: ${rom} Changelog: ${log} #Nexus #Nexus4 #mako"
+elif [ "$LUNCH" = "cm_i9100-userdebug" ]
+then
+  rom="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://s2.finnq.de/Preview/cm-10.1-$(date +"%Y%m%d")-EXPERIMENTAL-i9100-finnq.zip&format=txt"`"
+  log="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://s2.finnq.de/Preview/Log/changelog-$(date +"%Y%m%d").txt&format=txt"`"
+
+  tweet "#finnqBuild finished successfully ROM: ${rom} Changelog: ${log} #Galaxy #GalaxyS2 #i9100"
+else
+then
+  tweet "#finnqBuild finished successfully, device $LUNCH not defined"
+fi
+#tweet status end
