@@ -68,6 +68,12 @@ then
   exit 1
 fi
 
+if [ -z "$SYNC" ]
+then
+  echo SYNC not specified
+  exit 1
+fi
+
 if [ -z "$SYNC_PROTO" ]
 then
   SYNC_PROTO=git
