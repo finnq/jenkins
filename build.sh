@@ -144,10 +144,15 @@ cat .repo/manifests/default.xml
 echo Local Manifest:
 cat .repo/local_manifests/$REPO_BRANCH.xml
 
-echo Syncing...
-repo sync -d -c > /dev/null
-check_result "repo sync failed."
-echo Sync complete.
+if [ $SYNC = "true" ]
+then
+  echo Syncing...
+  repo sync -d -c > /dev/null
+  check_result "repo sync failed."
+  echo Sync complete.
+else
+  echo "Skip syncing..."
+fi
 
 cd packages/apps/Gallery2
 git revert 3afe270b445e8804d894166652672c0947d915f1
