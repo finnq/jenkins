@@ -135,8 +135,9 @@ then
   . ~/.jenkins_profile
 fi
 
-mkdir -p .repo/local_manifests
-cp $WORKSPACE/jenkins/$REPO_BRANCH.xml .repo/local_manifests/
+#mkdir -p .repo/local_manifests
+#cp $WORKSPACE/jenkins/$REPO_BRANCH.xml .repo/local_manifests/
+cp $WORKSPACE/jenkins/$REPO_BRANCH.xml .repo/local_manifest.xml
 
 echo Core Manifest:
 cat .repo/manifests/default.xml
