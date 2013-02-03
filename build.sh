@@ -74,6 +74,12 @@ then
   exit 1
 fi
 
+if [ -z "$PDROID" ]
+then
+  echo SYNC not specified
+  exit 1
+fi
+
 if [ -z "$SYNC_PROTO" ]
 then
   SYNC_PROTO=git
@@ -112,23 +118,13 @@ cd $JENKINS_BUILD_DIR
 
 # always force a fresh repo init since we can build off different branches
 # and the "default" upstream branch can get stuck on whatever was init first.
-if [ -z "$CORE_BRANCH" ]
-then
-  CORE_BRANCH=$REPO_BRANCH
-fi
 rm -rf .repo/manifests*
-repo init -u $SYNC_PROTO://github.com/CyanogenMod/android.git -b $CORE_BRANCH
+repo init -u $SYNC_PROTO://github.com/CyanogenMod/android.git -b $REPO_BRANCH
 check_result "repo init failed."
 
 # make sure ccache is in PATH
-if [[ "$REPO_BRANCH" =~ "jellybean" || $REPO_BRANCH =~ "cm-10" ]]
-then
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
 export CCACHE_DIR=~/.jb_ccache
-else
-export PATH="$PATH:/opt/local/bin/:$PWD/prebuilt/$(uname|awk '{print tolower($0)}')-x86/ccache"
-export CCACHE_DIR=~/.ics_ccache
-fi
 
 if [ -f ~/.jenkins_profile ]
 then
@@ -143,14 +139,15 @@ echo Core Manifest:
 cat .repo/manifests/default.xml
 
 echo Local Manifest:
-cat .repo/local_manifests/$REPO_BRANCH.xml
+#cat .repo/local_manifests/$REPO_BRANCH.xml
+cat .repo/local_manifest.xml
 
 if [ $SYNC = "true" ]
 then
   echo Syncing...
   repo sync -d -c > /dev/null
   check_result "repo sync failed."
-  echo Sync complete.
+  echo "Sync complete."
 else
   echo "Skip syncing..."
 fi
@@ -171,10 +168,10 @@ then
   LAST_BRANCH=$(cat .last_branch)
 else
   echo "Last build branch is unknown, assume clean build"
-  LAST_BRANCH=$REPO_BRANCH-$CORE_BRANCH
+  LAST_BRANCH=$REPO_BRANCH
 fi
 
-if [ "$LAST_BRANCH" != "$REPO_BRANCH-$CORE_BRANCH" ]
+if [ "$LAST_BRANCH" != "$REPO_BRANCH" ]
 then
   echo "Branch has changed since the last build happened here. Forcing cleanup."
   CLEAN="true"
@@ -193,20 +190,12 @@ UNAME=$(uname)
 
 if [ "$RELEASE_TYPE" = "CM_NIGHTLY" ]
 then
-  if [ "$REPO_BRANCH" = "gingerbread" ]
-  then
-    export CYANOGEN_NIGHTLY=true
-  else
-    export CM_NIGHTLY=true
-  fi
+  export CM_NIGHTLY=true
 elif [ "$RELEASE_TYPE" = "CM_EXPERIMENTAL" ]
 then
   export CM_EXPERIMENTAL=true
 elif [ "$RELEASE_TYPE" = "CM_RELEASE" ]
 then
-  # gingerbread needs this
-  export CYANOGEN_RELEASE=true
-  # ics needs this
   export CM_RELEASE=true
 fi
 
@@ -258,12 +247,12 @@ then
   fi
 fi
 
-if ([ ! -z "$REBASED_COMMITS" ] && [ ! -z "$REBASED_REPOS" ])
+if ([ ! -z "$CUSTOM_COMMITS" ] && [ ! -z "$CUSTOM_REPOS" ])
 then
   export CM_EXPERIMENTAL=true
 
-  python $WORKSPACE/jenkins/rebasedchanges.py $REBASED_COMMITS - $REBASED_REPOS
-  check_result "rebased changes picks failed."
+  python $WORKSPACE/jenkins/customchanges.py $CUSTOM_COMMITS - $CUSTOM_REPOS
+  check_result "custom changes picks failed."
 fi
 
 if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "100.0" ]
@@ -286,7 +275,7 @@ fi
 # PDroid fix
 make update-api
 
-echo "$REPO_BRANCH-$CORE_BRANCH" > .last_branch
+echo "$REPO_BRANCH" > .last_branch
 
 time mka bacon recoveryzip recoveryimage checkapi
 check_result "Build failed."
