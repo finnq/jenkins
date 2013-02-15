@@ -138,16 +138,14 @@ then
   . ~/.jenkins_profile
 fi
 
-#mkdir -p .repo/local_manifests
-#cp $WORKSPACE/jenkins/$REPO_BRANCH.xml .repo/local_manifests/
-cp $WORKSPACE/jenkins/$REPO_BRANCH.xml .repo/local_manifest.xml
+mkdir -p .repo/local_manifests
+cp $WORKSPACE/jenkins/$REPO_BRANCH.xml .repo/local_manifests/
 
 echo Core Manifest:
 cat .repo/manifests/default.xml
 
 echo Local Manifest:
-#cat .repo/local_manifests/$REPO_BRANCH.xml
-cat .repo/local_manifest.xml
+cat .repo/local_manifests/$REPO_BRANCH.xml
 
 if [ $SYNC = "true" ]
 then
@@ -183,7 +181,18 @@ lunch $LUNCH
 check_result "lunch failed."
 
 # save manifest used for build (saving revisions as current HEAD)
+
+# include only the auto-generated locals
+TEMPSTASH=$(mktemp -d)
+mv .repo/local_manifests/* $TEMPSTASH
+mv $TEMPSTASH/roomservice.xml .repo/local_manifests/
+
+# save it
 repo manifest -o $WORKSPACE/archive/manifest.xml -r
+
+# restore all local manifests
+mv $TEMPSTASH/* .repo/local_manifests/ 2>/dev/null
+rmdir $TEMPSTASH
 
 rm -f $OUT/cm-*.zip*
 
@@ -319,7 +328,16 @@ unzip -p $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
 # CORE: save manifest used for build (saving revisions as current HEAD)
 rm -f .repo/local_manifests/$REPO_BRANCH.xml
+rm -f .repo/local_manifests/roomservice.xml
+
+# Stash away other possible manifests
+TEMPSTASH=$(mktemp -d)
+mv .repo/local_manifests $TEMPSTASH
+
 repo manifest -o $WORKSPACE/archive/core.xml -r
+
+mv $TEMPSTASH/local_manifests .repo
+rmdir $TEMPSTASH
 
 # chmod the files in case UMASK blocks permissions
 chmod -R ugo+r $WORKSPACE/archive
