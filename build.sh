@@ -80,6 +80,13 @@ then
   exit 1
 fi
 
+if [ -z "$PULL" ]
+then
+  echo PULL not specified
+  exit 1
+fi
+
+
 if [ -z "$SYNC_PROTO" ]
 then
   SYNC_PROTO=git
@@ -151,12 +158,6 @@ then
 else
   echo "Skip syncing..."
 fi
-
-#cd packages/apps/Gallery2
-#git revert 3afe270b445e8804d894166652672c0947d915f1
-
-#git revert dde77bda2f1f1923026d7164b38298821f1c825b
-#cd ../../..
 
 if [ -f $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh ]
 then
@@ -245,6 +246,25 @@ then
     python $WORKSPACE/jenkins/repopick.py $(curl $GERRIT_CHANGES)
     check_result "gerrit picks failed."
   fi
+fi
+
+if [ $PULL = "true" ]
+then
+  export CM_EXPERIMENTAL=true
+
+  cd frameworks/base
+  git fetch finnqBuilds
+  git pull finnqBuilds $REPO_BRANCH
+
+  cd ../../packages/apps/Settings
+  git fetch finnqBuilds
+  git pull finnqBuilds $REPO_BRANCH
+
+  cd ../Nfc
+  git fetch finnqBuilds
+  git pull finnqBuilds $REPO_BRANCH
+
+  cd ../../..
 fi
 
 if ([ ! -z "$CUSTOM_COMMITS" ] && [ ! -z "$CUSTOM_REPOS" ])
