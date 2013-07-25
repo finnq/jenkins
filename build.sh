@@ -2,12 +2,12 @@
 #tweet status
 if [ "$LUNCH" = "cm_mako-userdebug" ]
 then
-  tweet "#finnqBuild started, #Nexus #Nexus4 #mako"
+  tweet "#CyanKang: Build started, #Nexus #Nexus4 #mako"
 elif [ "$LUNCH" = "cm_i9100-userdebug" ]
 then
-  tweet "#finnqBuild started, #Galaxy #GalaxyS2 #i9100"
+  tweet "#CyanKang: Build started, #Galaxy #GalaxyS2 #i9100"
 else
-  tweet "#finnqBuild started, device $LUNCH not defined"
+  tweet "#CyanKang: Build started, device $LUNCH not defined"
 fi
 #tweet status end
 
@@ -19,12 +19,12 @@ function check_result {
     #tweet status
     if [ "$LUNCH" = "cm_mako-userdebug" ]
     then
-      tweet "#finnqBuild failed, #Nexus #Nexus4 #mako"
+      tweet "#CyanKang: Build failed, #Nexus #Nexus4 #mako"
     elif [ "$LUNCH" = "cm_i9100-userdebug" ]
     then
-      tweet "#finnqBuild failed, #Galaxy #GalaxyS2 #i9100"
+      tweet "#CyanKang: Build failed, #Galaxy #GalaxyS2 #i9100"
     else
-      tweet "#finnqBuild failed, device $LUNCH not defined"
+      tweet "#CyanKang: Build failed, device $LUNCH not defined"
     fi
     #tweet status end
 
@@ -263,33 +263,6 @@ then
   fi
 fi
 
-if [ $PULL = "true" ]
-then
-  export CM_EXPERIMENTAL=true
-
-  cd frameworks/base
-  git fetch finnqBuilds
-  git pull finnqBuilds $REPO_BRANCH
-
-  cd ../../packages/apps/Settings
-  git fetch finnqBuilds
-  git pull finnqBuilds $REPO_BRANCH
-
-  cd ../Nfc
-  git fetch finnqBuilds
-  git pull finnqBuilds $REPO_BRANCH
-
-  cd ../../..
-fi
-
-if ([ ! -z "$CUSTOM_COMMITS" ] && [ ! -z "$CUSTOM_REPOS" ])
-then
-  export CM_EXPERIMENTAL=true
-
-  python $WORKSPACE/jenkins/customchanges.py $CUSTOM_COMMITS - $CUSTOM_REPOS
-  check_result "custom changes picks failed."
-fi
-
 if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "100.0" ]
 then
   ccache -M 100G
@@ -379,14 +352,14 @@ then
   rom="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://n4.finnq.de/Preview/cm-10.1-$(date +"%Y%m%d")-EXPERIMENTAL-mako-finnq.zip&format=txt"`"
   log="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://n4.finnq.de/Preview/Log/changelog-$(date +"%Y%m%d").txt&format=txt"`"
 
-  tweet "#finnqBuild finished successfully ROM: ${rom} Changelog: ${log} #Nexus #Nexus4 #mako"
+  tweet "#CyanKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Nexus #Nexus4 #mako"
 elif [ "$LUNCH" = "cm_i9100-userdebug" ]
 then
   rom="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://s2.finnq.de/Preview/cm-10.1-$(date +"%Y%m%d")-EXPERIMENTAL-i9100-finnq.zip&format=txt"`"
   log="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://s2.finnq.de/Preview/Log/changelog-$(date +"%Y%m%d").txt&format=txt"`"
 
-  tweet "#finnqBuild finished successfully ROM: ${rom} Changelog: ${log} #Galaxy #GalaxyS2 #i9100"
+  tweet "#CyanKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Galaxy #GalaxyS2 #i9100"
 else
-  tweet "#finnqBuild finished successfully, device $LUNCH not defined"
+  tweet "#CyanKang: Build finished successfully, device $LUNCH not defined"
 fi
 #tweet status end
