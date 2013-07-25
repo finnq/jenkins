@@ -76,13 +76,7 @@ fi
 
 if [ -z "$PDROID" ]
 then
-  echo SYNC not specified
-  exit 1
-fi
-
-if [ -z "$PULL" ]
-then
-  echo PULL not specified
+  echo PDROID not specified
   exit 1
 fi
 
