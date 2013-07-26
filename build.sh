@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 #tweet status
 if [ "$LUNCH" = "cm_mako-userdebug" ]
 then
@@ -14,6 +15,8 @@ fi
 function check_result {
   if [ "0" -ne "$?" ]
   then
+    (repo forall -c "git reset --hard") >/dev/null
+    rm -f .repo/local_manifests/roomservice.xml
     echo $1
 
     #tweet status
@@ -114,18 +117,23 @@ else
    JENKINS_BUILD_DIR=$REPO_BRANCH
 fi
 
+export JENKINS_BUILD_DIR
+
 mkdir -p $JENKINS_BUILD_DIR
 cd $JENKINS_BUILD_DIR
 
 # always force a fresh repo init since we can build off different branches
 # and the "default" upstream branch can get stuck on whatever was init first.
 rm -rf .repo/manifests*
-repo init -u $SYNC_PROTO://github.com/CyanogenMod/android.git -b $REPO_BRANCH
+repo init -u $SYNC_PROTO://github.com/CyanKang/android.git -b $REPO_BRANCH
 check_result "repo init failed."
 
 # make sure ccache is in PATH
-export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
-export CCACHE_DIR=~/.jb_ccache
+if [[ "$REPO_BRANCH" =~ "jellybean" || $REPO_BRANCH =~ "cm-10" ]]
+then
+  export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
+  export CCACHE_DIR=~/.jb_ccache
+fi
 
 if [ -f ~/.jenkins_profile ]
 then
@@ -141,8 +149,12 @@ cat .repo/manifests/default.xml
 echo Local Manifest:
 cat .repo/local_manifests/$REPO_BRANCH.xml
 
-if [ $SYNC = "true" ]
+if [ $SYNC = true ]
 then
+  ## TEMPORARY: Some kernels are building _into_ the source tree and messing
+  ## up posterior syncs due to changes
+  rm -rf kernel/*
+
   echo Syncing...
   repo sync -d -c > /dev/null
   check_result "repo sync failed."
@@ -154,6 +166,8 @@ fi
 if [ -f $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh ]
 then
   $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh
+else
+  $WORKSPACE/jenkins/cm-setup.sh
 fi
 
 if [ -f .last_branch ]
@@ -167,14 +181,14 @@ fi
 if [ "$LAST_BRANCH" != "$REPO_BRANCH" ]
 then
   echo "Branch has changed since the last build happened here. Forcing cleanup."
-  CLEAN="true"
+  CLEAN=true
 fi
 
 . build/envsetup.sh
 # Workaround for failing translation checks in common hardware repositories
 if [ ! -z "$GERRIT_XLATION_LINT" ]
 then
-    LUNCH=$(echo $LUNCH@$DEVICEVENDOR | sed -f $WORKSPACE/hudson/shared-repo.map)
+    LUNCH=$(echo $LUNCH@$DEVICEVENDOR | sed -f $WORKSPACE/jenkins/shared-repo.map)
 fi
 
 lunch $LUNCH
@@ -214,7 +228,7 @@ then
   export CM_EXPERIMENTAL=true
 fi
 
-if [ $PDROID = "true" ]
+if [ $PDROID = true ]
 then
   export CM_EXPERIMENTAL=true
 
@@ -262,9 +276,7 @@ then
   ccache -M 100G
 fi
 
-WORKSPACE=$WORKSPACE LUNCH=$LUNCH sh
-
-if [ $CLEAN = "true" ]
+if [ $CLEAN = true ]
 then
   echo "Cleaning!"
   touch .clean
