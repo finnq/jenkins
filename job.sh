@@ -5,8 +5,8 @@ then
 fi
 
 cd $WORKSPACE
-mkdir -p ../android/CyanogenMod
-cd ../android/CyanogenMod
+mkdir ../android
+cd ../android
 export WORKSPACE=$PWD
 
 if [ ! -d jenkins ]
