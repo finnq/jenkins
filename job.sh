@@ -5,7 +5,7 @@ then
 fi
 
 cd $WORKSPACE
-mkdir ../android
+mkdir -p ../android
 cd ../android
 export WORKSPACE=$PWD
 
