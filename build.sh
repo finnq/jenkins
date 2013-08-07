@@ -290,9 +290,6 @@ else
   rm out/target/product/*/system/build.prop
 fi
 
-# PDroid fix
-make update-api
-
 echo "$REPO_BRANCH" > .last_branch
 
 time mka bacon recoveryzip recoveryimage checkapi
