@@ -83,6 +83,10 @@ then
   exit 1
 fi
 
+if [ -z "$CONNECTIONS" ]
+then
+  CONNECTIONS=16
+fi
 
 if [ -z "$SYNC_PROTO" ]
 then
@@ -156,7 +160,7 @@ then
   rm -rf kernel/*
 
   echo Syncing...
-  repo sync -d -c > /dev/null
+  repo sync -d -c -j $CONNECTIONS > /dev/null
   check_result "repo sync failed."
   echo "Sync complete."
 else
