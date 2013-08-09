@@ -297,7 +297,7 @@ then
 fi
 
 # archive the build.prop as well
-ZIP=$(ls $WORKSPACE/archive/CyanogenMod-*.zip)
+ZIP=$(ls $WORKSPACE/archive/CyanKang-*.zip)
 unzip -p $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
 # CORE: save manifest used for build (saving revisions as current HEAD)
