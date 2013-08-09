@@ -1,17 +1,5 @@
 #!/usr/bin/env bash
 
-#tweet status
-if [ "$LUNCH" = "cm_mako-userdebug" ]
-then
-  tweet "#CyanKang: Build started, #Nexus #Nexus4 #mako"
-elif [ "$LUNCH" = "cm_i9100-userdebug" ]
-then
-  tweet "#CyanKang: Build started, #Galaxy #GalaxyS2 #i9100"
-else
-  tweet "#CyanKang: Build started, device $LUNCH not defined"
-fi
-#tweet status end
-
 function check_result {
   if [ "0" -ne "$?" ]
   then
@@ -295,7 +283,7 @@ echo "$REPO_BRANCH" > .last_branch
 time mka bacon recoveryzip recoveryimage
 check_result "Build failed."
 
-for f in $(ls $OUT/cm-*.zip*)
+for f in $(ls $OUT/CyanKang-*.zip*)
 do
   ln $f $WORKSPACE/archive/$(basename $f)
 done
@@ -309,7 +297,7 @@ then
 fi
 
 # archive the build.prop as well
-ZIP=$(ls $WORKSPACE/archive/cm-*.zip)
+ZIP=$(ls $WORKSPACE/archive/CyanogenMod-*.zip)
 unzip -p $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
 # CORE: save manifest used for build (saving revisions as current HEAD)
@@ -356,15 +344,9 @@ rm -rf frameworks/base
 
 if [ "$LUNCH" = "cm_mako-userdebug" ]
 then
-  rom="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://n4.finnq.de/Preview/cm-10.1-$(date +"%Y%m%d")-EXPERIMENTAL-mako-finnq.zip&format=txt"`"
-  log="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://n4.finnq.de/Preview/Log/changelog-$(date +"%Y%m%d").txt&format=txt"`"
-
   tweet "#CyanKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Nexus #Nexus4 #mako"
 elif [ "$LUNCH" = "cm_i9100-userdebug" ]
 then
-  rom="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://s2.finnq.de/Preview/cm-10.1-$(date +"%Y%m%d")-EXPERIMENTAL-i9100-finnq.zip&format=txt"`"
-  log="`curl -s "https://api-ssl.bitly.com/v3/shorten?access_token=$BITLY_TOKEN&longUrl=http://s2.finnq.de/Preview/Log/changelog-$(date +"%Y%m%d").txt&format=txt"`"
-
   tweet "#CyanKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Galaxy #GalaxyS2 #i9100"
 else
   tweet "#CyanKang: Build finished successfully, device $LUNCH not defined"
