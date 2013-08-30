@@ -105,6 +105,9 @@ export CL_RST="\"\033[0m\""
 cd $WORKSPACE
 rm -rf archive
 mkdir -p archive
+if [ ! -d "CHANGELOGS" ]; then
+  mkdir CHANGELOGS
+fi
 export BUILD_NO=$BUILD_NUMBER
 unset BUILD_NUMBER
 
@@ -163,9 +166,21 @@ then
   repo sync -d -c -j $CONNECTIONS > /dev/null
   check_result "repo sync failed."
   echo "Sync complete."
+  echo "Create changelog."
+  LAST_SYNC=$(date -r .lsync_$LUNCH +%s)
+  WORKSPACE=$WORKSPACE LUNCH=$LUNCH bash $WORKSPACE/jenkins/changes/buildlog.sh $LAST_SYNC 2>&1
+  touch .lsync_$LUNCH
+  echo "Changelog created."
 else
   echo "Skip syncing..."
 fi
+
+echo "Add changelog."
+cd vendor/cm
+cp -f $WORKSPACE/CHANGELOGS/$LUNCH.txt CHANGELOG.mkdn
+git commit -a -m "Added changelog."
+cd ../..
+echo "Changelog added."
 
 if [ -f $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh ]
 then
@@ -329,30 +344,6 @@ rmdir $TEMPSTASH
 
 # chmod the files in case UMASK blocks permissions
 chmod -R ugo+r $WORKSPACE/archive
-
-CMCP=$(which cmcp)
-if [ ! -z "$CMCP" -a ! -z "$CM_RELEASE" ]
-then
-  MODVERSION=$(cat $WORKSPACE/archive/build.prop | grep ro.modversion | cut -d = -f 2)
-  if [ -z "$MODVERSION" ]
-  then
-    MODVERSION=$(cat $WORKSPACE/archive/build.prop | grep ro.cm.version | cut -d = -f 2)
-  fi
-  if [ -z "$MODVERSION" ]
-  then
-    echo "Unable to detect ro.modversion or ro.cm.version."
-    exit 1
-  fi
-  echo Archiving release to S3.
-  for f in $(ls $WORKSPACE/archive)
-  do
-    cmcp $WORKSPACE/archive/$f release/$MODVERSION/$f > /dev/null 2> /dev/null
-    check_result "Failure archiving $f"
-  done
-fi
-
-#pdroid cleanup
-rm -rf frameworks/base
 
 #tweet status
 
