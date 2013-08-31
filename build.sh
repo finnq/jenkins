@@ -96,6 +96,7 @@ mkdir -p archive
 if [ ! -d "CHANGELOGS" ]; then
   mkdir CHANGELOGS
 fi
+export PDROID
 export BUILD_NO=$BUILD_NUMBER
 unset BUILD_NUMBER
 
@@ -239,29 +240,36 @@ fi
 
 if [ $PDROID = true ]
 then
-  export CM_EXPERIMENTAL=true
-
   echo "------PDROID PATCHES------"
+  TOP_=$(gettop)
+  cd $(getopddir)
+  git pull git://github.com/OpenPDroid/OpenPDroidPatches.git 4.3
+  cd $TOP_
+  
+  cd frameworks/base
+  patch -p1 < $(getopddir)/openpdroid_4.3_frameworks_base.patch
+  git commit -a -m 'PDroid added'
+  croot
 
   cd frameworks/opt/telephony
-  git pull pdroid $REPO_BRANCH-openpdroid-devel
-  cd ../../..
-
-  cd frameworks/base
-  git pull pdroid $REPO_BRANCH-openpdroid-devel
-  cd ../..
+  patch -p1 < $(getopddir)/openpdroid_4.3_frameworks_opt_telephony.patch
+  git commit -a -m 'PDroid added'
+  croot
 
   cd libcore
-  git pull pdroid $REPO_BRANCH-openpdroid-devel
-  cd ..
+  patch -p1 < $(getopddir)/openpdroid_4.3_libcore.patch
+  git commit -a -m 'PDroid added'
+  croot
 
   cd build
-  git pull pdroid $REPO_BRANCH-openpdroid-devel
-  cd ..
+  patch -p1 < $(getopddir)/openpdroid_4.3_build.patch
+  git commit -a -m 'PDroid added'
+  croot
 
   cd packages/apps/Mms
-  git pull pdroid $REPO_BRANCH-openpdroid-devel
-  cd ../../..
+  patch -p1 < $(getopddir)/openpdroid_4.3_packages_apps_Mms.patch
+  git commit -a -m 'PDroid added'
+  croot
 
   echo "------PDROID PATCHES END------"
 fi
