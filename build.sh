@@ -246,27 +246,32 @@ then
   
   cd frameworks/base
   patch -p1 < $(getopddir)/openpdroid_4.3_frameworks_base.patch
-  git commit -a -m 'PDroid added'
+  git add -A
+  git commit -m 'PDroid added'
   croot
 
   cd frameworks/opt/telephony
   patch -p1 < $(getopddir)/openpdroid_4.3_frameworks_opt_telephony.patch
-  git commit -a -m 'PDroid added'
+  git add -A
+  git commit -m 'PDroid added'
   croot
 
   cd libcore
   patch -p1 < $(getopddir)/openpdroid_4.3_libcore.patch
-  git commit -a -m 'PDroid added'
+  git add -A
+  git commit -m 'PDroid added'
   croot
 
   cd build
   patch -p1 < $(getopddir)/openpdroid_4.3_build.patch
-  git commit -a -m 'PDroid added'
+  git add -A
+  git commit -m 'PDroid added'
   croot
 
   cd packages/apps/Mms
   patch -p1 < $(getopddir)/openpdroid_4.3_packages_apps_Mms.patch
-  git commit -a -m 'PDroid added'
+  git add -A
+  git commit -m 'PDroid added'
   croot
 
   echo "------PDROID PATCHES END------"
