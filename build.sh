@@ -302,8 +302,9 @@ then
   touch .clean
   make clobber
 else
-  echo "Hacky fix build date!"
+  echo "Hacky fix build date & remove old builds!"
   rm out/target/product/*/system/build.prop
+  rm out/target/product/*/CyanKang-*.zip
 fi
 
 echo "$REPO_BRANCH" > .last_branch
