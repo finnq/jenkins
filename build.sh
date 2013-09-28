@@ -155,15 +155,15 @@ then
   repo sync -d -c -j $CONNECTIONS > /dev/null
   check_result "repo sync failed."
   echo "Sync complete."
-  echo "Create changelog."
-  LAST_SYNC=$(date -r .lsync_$LUNCH +%s)
-  WORKSPACE=$WORKSPACE LUNCH=$LUNCH bash $WORKSPACE/jenkins/changes/buildlog.sh $LAST_SYNC 2>&1
-  touch .lsync_$LUNCH
-  echo "Changelog created."
 else
   echo "Skip syncing..."
 fi
 
+echo "Create changelog."
+LAST_SYNC=$(date -r .lsync_$LUNCH +%s)
+WORKSPACE=$WORKSPACE LUNCH=$LUNCH bash $WORKSPACE/jenkins/changes/buildlog.sh $LAST_SYNC 2>&1
+touch .lsync_$LUNCH
+echo "Changelog created."
 echo "Add changelog."
 cd vendor/cm
 cp -f $WORKSPACE/CHANGELOGS/$LUNCH.txt CHANGELOG.mkdn
