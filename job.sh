@@ -20,6 +20,6 @@ git reset --hard
 git pull -s resolve
 
 # Add /usr/local/bin to PATH
-export PATH="$PATH:/usr/local/bin/"
+export PATH="$PATH:/usr/local/bin/:/opt/java6/bin:/opt/java6/db/bin:/opt/java6/jre/bin"
 
 exec ./build.sh
