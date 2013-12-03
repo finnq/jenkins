@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<manifest>
-  <project name="TheMuppets/proprietary_vendor_samsung" path="vendor/samsung" revision="cm-10.1" />
-  <project name="TheMuppets/proprietary_vendor_lge.git" path="vendor/lge" revision="cm-10.1"/>
-</manifest>

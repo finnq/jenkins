@@ -8,14 +8,14 @@ function check_result {
     echo $1
 
     #tweet status
-    if [ "$LUNCH" = "cm_mako-userdebug" ]
+    if [ "$LUNCH" = "ok_mako-userdebug" ]
     then
-      tweet "#CyanKang: Build failed, #Nexus #Nexus4 #mako"
-    elif [ "$LUNCH" = "cm_i9100-userdebug" ]
+      tweet "#OmniKang: Build failed, #Nexus #Nexus4 #mako"
+    elif [ "$LUNCH" = "ok_i9100-userdebug" ]
     then
-      tweet "#CyanKang: Build failed, #Galaxy #GalaxyS2 #i9100"
+      tweet "#OmniKang: Build failed, #Galaxy #GalaxyS2 #i9100"
     else
-      tweet "#CyanKang: Build failed, device $LUNCH not defined"
+      tweet "#OmniKang: Build failed, device $LUNCH not defined"
     fi
     #tweet status end
 
@@ -107,8 +107,8 @@ export BUILD_WITH_COLORS=0
 git config --global user.name finnq
 git config --global user.email finnq@finnq.de
 
-if [[ "$REPO_BRANCH" =~ "jellybean" || $REPO_BRANCH =~ "cm-10" ]]; then 
-   JENKINS_BUILD_DIR=jellybean
+if [[ "$REPO_BRANCH" =~ "kk" ]]; then 
+   JENKINS_BUILD_DIR=kitkat
 else
    JENKINS_BUILD_DIR=$REPO_BRANCH
 fi
@@ -121,15 +121,12 @@ cd $JENKINS_BUILD_DIR
 # always force a fresh repo init since we can build off different branches
 # and the "default" upstream branch can get stuck on whatever was init first.
 rm -rf .repo/manifests*
-repo init -u $SYNC_PROTO://github.com/CyanKang/android.git -b $REPO_BRANCH
+repo init -u $SYNC_PROTO://github.com/OmniKang/android.git -b $REPO_BRANCH
 check_result "repo init failed."
 
 # make sure ccache is in PATH
-if [[ "$REPO_BRANCH" =~ "jellybean" || $REPO_BRANCH =~ "cm-10" ]]
-then
-  export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
-  export CCACHE_DIR=~/.jb_ccache
-fi
+export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/linux-x86/ccache"
+export CCACHE_DIR=~/.kk_ccache
 
 if [ -f ~/.jenkins_profile ]
 then
@@ -165,7 +162,7 @@ WORKSPACE=$WORKSPACE LUNCH=$LUNCH bash $WORKSPACE/jenkins/changes/buildlog.sh $L
 touch .lsync_$LUNCH
 echo "Changelog created."
 echo "Add changelog."
-cd vendor/cm
+cd vendor/omni
 cp -f $WORKSPACE/CHANGELOGS/$LUNCH.txt CHANGELOG.mkdn
 git commit -a -m "Added changelog."
 cd ../..
@@ -174,8 +171,6 @@ echo "Changelog added."
 if [ -f $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh ]
 then
   $WORKSPACE/jenkins/$REPO_BRANCH-setup.sh
-else
-  $WORKSPACE/jenkins/cm-setup.sh
 fi
 
 if [ -f .last_branch ]
@@ -193,11 +188,6 @@ then
 fi
 
 . build/envsetup.sh
-# Workaround for failing translation checks in common hardware repositories
-if [ ! -z "$GERRIT_XLATION_LINT" ]
-then
-    LUNCH=$(echo $LUNCH@$DEVICEVENDOR | sed -f $WORKSPACE/jenkins/shared-repo.map)
-fi
 
 lunch $LUNCH
 check_result "lunch failed."
@@ -216,70 +206,27 @@ repo manifest -o $WORKSPACE/archive/manifest.xml -r
 mv $TEMPSTASH/* .repo/local_manifests/ 2>/dev/null
 rmdir $TEMPSTASH
 
-rm -f $OUT/cm-*.zip*
-
 UNAME=$(uname)
 
-if [ "$RELEASE_TYPE" = "CM_NIGHTLY" ]
+if [ "$RELEASE_TYPE" = "OK_NIGHTLY" ]
 then
-  export CM_NIGHTLY=true
-elif [ "$RELEASE_TYPE" = "CM_EXPERIMENTAL" ]
+  export OK_NIGHTLY=true
+elif [ "$RELEASE_TYPE" = "OK_EXPERIMENTAL" ]
 then
-  export CM_EXPERIMENTAL=true
-elif [ "$RELEASE_TYPE" = "CM_RELEASE" ]
+  export OK_EXPERIMENTAL=true
+elif [ "$RELEASE_TYPE" = "OK_RELEASE" ]
 then
-  export CM_RELEASE=true
+  export OK_RELEASE=true
 fi
 
-if [ ! -z "$CM_EXTRAVERSION" ]
+if [ ! -z "$OK_EXTRAVERSION" ]
 then
-  export CM_EXPERIMENTAL=true
-fi
-
-if [ $PDROID = true ]
-then
-  echo "------PDROID PATCHES------"
-  TOP_=$(gettop)
-  cd $(getopddir)
-  git pull git://github.com/OpenPDroid/OpenPDroidPatches.git 4.3
-  cd $TOP_
-  
-  cd frameworks/base
-  patch -p1 < $(getopddir)/openpdroid_4.3_frameworks_base.patch
-  git add -A
-  git commit -m 'PDroid added'
-  croot
-
-  cd frameworks/opt/telephony
-  patch -p1 < $(getopddir)/openpdroid_4.3_frameworks_opt_telephony.patch
-  git add -A
-  git commit -m 'PDroid added'
-  croot
-
-  cd libcore
-  patch -p1 < $(getopddir)/openpdroid_4.3_libcore.patch
-  git add -A
-  git commit -m 'PDroid added'
-  croot
-
-  cd build
-  patch -p1 < $(getopddir)/openpdroid_4.3_build.patch
-  git add -A
-  git commit -m 'PDroid added'
-  croot
-
-  cd packages/apps/Mms
-  patch -p1 < $(getopddir)/openpdroid_4.3_packages_apps_Mms.patch
-  git add -A
-  git commit -m 'PDroid added'
-  croot
-
-  echo "------PDROID PATCHES END------"
+  export OK_EXPERIMENTAL=true
 fi
 
 if [ ! -z "$GERRIT_CHANGES" ]
 then
-  export CM_EXPERIMENTAL=true
+  export OK_EXPERIMENTAL=true
   IS_HTTP=$(echo $GERRIT_CHANGES | grep http)
   if [ -z "$IS_HTTP" ]
   then
@@ -304,7 +251,7 @@ then
 else
   echo "Hacky fix build date & remove old builds!"
   rm out/target/product/*/system/build.prop
-  rm out/target/product/*/CyanKang-*.zip
+  rm out/target/product/*/OmniKang-*.zip*
 fi
 
 echo "$REPO_BRANCH" > .last_branch
@@ -312,7 +259,7 @@ echo "$REPO_BRANCH" > .last_branch
 time mka bacon recoveryzip recoveryimage
 check_result "Build failed."
 
-for f in $(ls $OUT/CyanKang-*.zip*)
+for f in $(ls $OUT/OmniKang-*.zip*)
 do
   ln $f $WORKSPACE/archive/$(basename $f)
 done
@@ -326,7 +273,7 @@ then
 fi
 
 # archive the build.prop as well
-ZIP=$(ls $WORKSPACE/archive/CyanKang-*.zip)
+ZIP=$(ls $WORKSPACE/archive/OmniKang-*.zip)
 unzip -p $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
 # CORE: save manifest used for build (saving revisions as current HEAD)
@@ -347,13 +294,13 @@ chmod -R ugo+r $WORKSPACE/archive
 
 #tweet status
 
-if [ "$LUNCH" = "cm_mako-userdebug" ]
+if [ "$LUNCH" = "ok_mako-userdebug" ]
 then
-  tweet "#CyanKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Nexus #Nexus4 #mako"
-elif [ "$LUNCH" = "cm_i9100-userdebug" ]
+  tweet "#OmniKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Nexus #Nexus4 #mako"
+elif [ "$LUNCH" = "ok_i9100-userdebug" ]
 then
-  tweet "#CyanKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Galaxy #GalaxyS2 #i9100"
+  tweet "#OmniKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Galaxy #GalaxyS2 #i9100"
 else
-  tweet "#CyanKang: Build finished successfully, device $LUNCH not defined"
+  tweet "#OmniKang: Build finished successfully, device $LUNCH not defined"
 fi
 #tweet status end
