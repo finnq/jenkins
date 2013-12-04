@@ -32,7 +32,7 @@ for change in sys.argv[1:]:
         pline = plist.stdout.readline().rstrip()
         ppaths = re.split('\s*:\s*', pline.decode())
         if ppaths[1] == project:
-            roject = ppaths[0]
+            project = ppaths[0]
             break
         if(retcode is not None):
             break
