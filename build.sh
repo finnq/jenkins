@@ -164,7 +164,8 @@ echo "Changelog created."
 echo "Add changelog."
 cd vendor/omni
 cp -f $WORKSPACE/CHANGELOGS/$LUNCH.txt CHANGELOG.mkdn
-git commit -a -m "Added changelog."
+git add CHANGELOG.mkdn
+git commit -m "Added changelog."
 cd ../..
 echo "Changelog added."
 
