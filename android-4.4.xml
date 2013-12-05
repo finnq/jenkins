@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-  <project name="DonkeyCoyote/proprietary_vendor_samsung" 
-path="vendor/samsung" revision="android-4.4" />
-  <project name="DonkeyCoyote/proprietary_vendor_lge.git" 
-path="vendor/lge" revision="android-4.4"/>
-  <project name="DonkeyCoyote/proprietary_vendor_htc.git" 
-path="vendor/htc" revision="android-4.4" />
+  <project name="DonkeyCoyote/proprietary_vendor_samsung.git" path="vendor/samsung" revision="android-4.4" />
+  <project name="DonkeyCoyote/proprietary_vendor_lge.git" path="vendor/lge" revision="android-4.4"/>
+  <project name="DonkeyCoyote/proprietary_vendor_htc.git" path="vendor/htc" revision="android-4.4" />
 </manifest>
