@@ -257,7 +257,7 @@ fi
 
 echo "$REPO_BRANCH" > .last_branch
 
-time mka bacon recoveryzip recoveryimage
+time mka bacon
 check_result "Build failed."
 
 for f in $(ls $OUT/OmniKang-*.zip*)
