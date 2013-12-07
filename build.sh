@@ -250,8 +250,6 @@ then
   touch .clean
   make clobber
 else
-  echo "Hacky fix build date & remove old builds!"
-  rm out/target/product/*/system/build.prop
   rm out/target/product/*/OmniKang-*.zip*
 fi
 
