@@ -8,10 +8,10 @@ function check_result {
     echo $1
 
     #tweet status
-    if [ "$LUNCH" = "ok_mako-userdebug" ]
+    if [ "$LUNCH" = "omni_mako-userdebug" ]
     then
       tweet "#OmniKang: Build failed, #Nexus #Nexus4 #mako"
-    elif [ "$LUNCH" = "ok_i9100-userdebug" ]
+    elif [ "$LUNCH" = "omni_i9100-userdebug" ]
     then
       tweet "#OmniKang: Build failed, #Galaxy #GalaxyS2 #i9100"
     else
@@ -211,23 +211,23 @@ UNAME=$(uname)
 
 if [ "$RELEASE_TYPE" = "OK_NIGHTLY" ]
 then
-  export OK_NIGHTLY=true
+  export BUILDTYPE_NIGHTLY=true
 elif [ "$RELEASE_TYPE" = "OK_EXPERIMENTAL" ]
 then
-  export OK_EXPERIMENTAL=true
+  export BUILDTYPE_EXPERIMENTAL=true
 elif [ "$RELEASE_TYPE" = "OK_RELEASE" ]
 then
-  export OK_RELEASE=true
+  export BUILDTYPE_RELEASE=true
 fi
 
 if [ ! -z "$OK_EXTRAVERSION" ]
 then
-  export OK_EXPERIMENTAL=true
+  export BUILDTYPE_EXPERIMENTAL=true
 fi
 
 if [ ! -z "$GERRIT_CHANGES" ]
 then
-  export OK_EXPERIMENTAL=true
+  export BUILDTYPE_EXPERIMENTAL=true
   IS_HTTP=$(echo $GERRIT_CHANGES | grep http)
   if [ -z "$IS_HTTP" ]
   then
@@ -293,10 +293,10 @@ chmod -R ugo+r $WORKSPACE/archive
 
 #tweet status
 
-if [ "$LUNCH" = "ok_mako-userdebug" ]
+if [ "$LUNCH" = "omni_mako-userdebug" ]
 then
   tweet "#OmniKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Nexus #Nexus4 #mako"
-elif [ "$LUNCH" = "ok_i9100-userdebug" ]
+elif [ "$LUNCH" = "omni_i9100-userdebug" ]
 then
   tweet "#OmniKang: Build finished successfully ROM: ${rom} Changelog: ${log} #Galaxy #GalaxyS2 #i9100"
 else
