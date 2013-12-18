@@ -255,6 +255,8 @@ fi
 
 echo "$REPO_BRANCH" > .last_branch
 
+breakfast $LUNCH
+check_result "Build failed."
 time mka bacon
 check_result "Build failed."
 
